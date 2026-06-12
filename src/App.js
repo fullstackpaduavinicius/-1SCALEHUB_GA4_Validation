@@ -1,72 +1,87 @@
 import "./App.css";
 
-const WHATSAPP_NUMBER = "5579999999999";
+const WHATSAPP_NUMBER = "5579998807035";
 
-const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=Ol%C3%A1%2C%20quero%20solicitar%20um%20diagn%C3%B3stico%20para%20minha%20empresa.`;
+const defaultWhatsappMessage =
+  "Olá, quero solicitar um diagnóstico gratuito para minha empresa.";
+
+function makeWhatsappLink(message = defaultWhatsappMessage) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+const whatsappLink = makeWhatsappLink();
+
+function trackWhatsappClick(location) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", "click_whatsapp", {
+      event_category: "lead",
+      event_label: location
+    });
+  }
+}
+
+function WhatsAppCTA({
+  children,
+  className = "primaryButton",
+  message = defaultWhatsappMessage,
+  eventLabel = "cta"
+}) {
+  return (
+    <a
+      className={className}
+      href={makeWhatsappLink(message)}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() => trackWhatsappClick(eventLabel)}
+    >
+      {children}
+    </a>
+  );
+}
 
 const painCards = [
   {
     icon: "△",
-    title: "Impulsionamento sem estratégia",
-    text: "Seu dinheiro vai para anúncios soltos, sem segmentação, oferta ou intenção clara."
+    title: "Anúncios sem direção",
+    text: "Campanhas rodando sem oferta clara, público bem definido ou objetivo comercial."
   },
   {
     icon: "▣",
-    title: "Mensagens desqualificadas",
-    text: "Você recebe contatos curiosos demais e poucos clientes realmente prontos para comprar."
+    title: "Leads sem qualidade",
+    text: "Muitas mensagens curiosas e poucas conversas com intenção real de compra."
   },
   {
     icon: "◎",
-    title: "Falta de controle sobre métricas",
-    text: "Sem saber o que funciona, você ajusta campanhas no escuro."
+    title: "Métricas no escuro",
+    text: "Sem rastreamento, você não sabe qual anúncio, página ou canal gera resultado."
   },
   {
     icon: "✦",
-    title: "Páginas que não convertem",
-    text: "Tráfego chega, mas a página não conduz o visitante para uma ação."
-  },
-  {
-    icon: "◈",
-    title: "Decisões baseadas em achismo",
-    text: "Ajustes feitos pelo feeling, sem leitura de dados reais."
-  },
-  {
-    icon: "▤",
-    title: "Dependência apenas do orgânico",
-    text: "Crescimento lento, imprevisível e difícil de escalar."
+    title: "Página que não vende",
+    text: "O tráfego chega, mas a página não conduz o visitante para o WhatsApp."
   }
 ];
 
 const structureCards = [
   {
     icon: "↗",
-    title: "Campanhas no Meta Ads e Google Ads",
-    text: "Criamos campanhas com estratégia, segmentação e foco em conversas qualificadas."
+    title: "Campanhas estratégicas",
+    text: "Meta Ads e Google Ads com foco em conversas, orçamento e oportunidade comercial."
   },
   {
     icon: "▧",
-    title: "Landing pages com foco em conversão",
-    text: "Páginas rápidas, objetivas e pensadas para transformar visitantes em oportunidades."
+    title: "Landing page de conversão",
+    text: "Página objetiva, rápida e preparada para levar o visitante ao WhatsApp."
   },
   {
     icon: "⚡",
-    title: "Rastreamento com Pixel e GA4",
-    text: "Eventos e conversões medidos para entender o que realmente gera resultado."
-  },
-  {
-    icon: "◒",
-    title: "Análise de público e comportamento",
-    text: "Entendemos quem responde melhor aos anúncios e como melhorar a abordagem."
+    title: "Pixel e GA4",
+    text: "Eventos configurados para medir cliques, origem do tráfego e ações importantes."
   },
   {
     icon: "◉",
     title: "Otimização contínua",
-    text: "Ajustes semanais com base em dados, criativos e custo por oportunidade."
-  },
-  {
-    icon: "▱",
-    title: "Relatórios claros e acionáveis",
-    text: "Você entende o que aconteceu, o que melhorou e quais serão os próximos passos."
+    text: "Ajustes em público, criativos, copy e verba com base no comportamento real."
   }
 ];
 
@@ -74,22 +89,17 @@ const processCards = [
   {
     step: "01",
     title: "Diagnóstico",
-    text: "Analisamos seu negócio, oferta, público e presença digital."
+    text: "Analisamos seu negócio, oferta, público, concorrência e presença digital."
   },
   {
     step: "02",
     title: "Estrutura",
-    text: "Criamos a base da campanha, página, eventos e comunicação."
+    text: "Criamos campanha, criativos, página, rastreamento e rota para WhatsApp."
   },
   {
     step: "03",
-    title: "Ativação",
-    text: "Colocamos os anúncios no ar e acompanhamos os primeiros sinais."
-  },
-  {
-    step: "04",
     title: "Otimização",
-    text: "Melhoramos público, criativos, copy e orçamento com base nos dados."
+    text: "Acompanhamos os dados e ajustamos para melhorar o custo por conversa."
   }
 ];
 
@@ -98,61 +108,78 @@ const methodCards = [
     step: "01",
     label: "Fase 01",
     title: "Posicionamento",
-    text: "Clareza da oferta, público, promessa e mensagem para atrair o cliente certo."
+    text: "Definimos promessa, oferta e mensagem para atrair o cliente certo."
   },
   {
     step: "02",
     label: "Fase 02",
     title: "Aquisição",
-    text: "Campanhas estruturadas para gerar conversas com intenção, não apenas cliques."
+    text: "Colocamos campanhas no ar para gerar conversas qualificadas."
   },
   {
     step: "03",
     label: "Fase 03",
     title: "Conversão",
-    text: "Páginas, atendimento e processo comercial alinhados para fechar mais vendas."
+    text: "Ajustamos página, atendimento e dados para aumentar oportunidades."
+  }
+];
+
+const proofStats = [
+  {
+    value: "R$ 13,16",
+    label: "custo por conversa analisado",
+    text: "Exemplo de leitura usada para entender se a campanha está saudável."
+  },
+  {
+    value: "1,67%",
+    label: "CTR acompanhado",
+    text: "Ajuda a identificar se criativo, promessa e público estão respondendo."
+  },
+  {
+    value: "GA4 + Pixel",
+    label: "eventos rastreados",
+    text: "Cliques no WhatsApp, origem do tráfego e ações importantes da página."
   }
 ];
 
 const audienceGood = [
   "Negócios locais que querem gerar mais conversas pelo WhatsApp",
   "Empresas que já vendem, mas não têm previsibilidade",
-  "Clínicas, lojas, prestadores de serviço e negócios com ticket médio saudável",
-  "Empresas que querem profissionalizar sua aquisição de clientes",
-  "Negócios com orçamento para investir de forma estratégica"
+  "Clínicas, lojas, prestadores de serviço e negócios com ticket saudável",
+  "Empresas que valorizam dados, atendimento e melhoria contínua"
 ];
 
 const audienceBad = [
-  "Quem procura curiosos",
-  "Quem não quer medir dados",
-  "Quem não acompanha leads",
-  "Quem não valoriza clareza, atendimento e processo comercial"
+  "Quem quer apenas impulsionar post sem estratégia",
+  "Quem não acompanha os contatos recebidos",
+  "Quem não quer medir dados nem melhorar o processo",
+  "Quem espera venda sem oferta, atendimento e estrutura comercial"
 ];
 
 const pricingPlans = [
   {
     name: "Essencial Local",
     description:
-      "Para negócios locais que querem começar a anunciar com estrutura profissional e foco em conversas pelo WhatsApp.",
+      "Para negócios locais que querem começar com tráfego pago estruturado e foco em conversas pelo WhatsApp.",
     price: "R$497",
-    period: "no primeiro mês • depois R$597/mês",
-    badge: null,
+    period: "primeiro mês • depois R$597/mês",
+    badge: "Entrada",
     highlighted: false,
     buttonText: "Quero começar",
     features: [
-      "Configuração da campanha",
-      "Criação dos anúncios e criativos",
-      "Gestão dos anúncios",
-      "Otimizações durante o mês",
+      "Campanha principal focada em WhatsApp",
+      "Configuração inicial dos anúncios",
+      "Criativos iniciais para teste",
       "Acompanhamento das principais métricas",
+      "Otimizações durante o mês",
       "Relatório mensal simples",
-      "Foco em gerar conversas qualificadas"
+      "Recomendações de melhoria"
     ]
   },
   {
     name: "Crescimento",
     description:
-      "Para empresas que querem mais previsibilidade, análise de dados e melhorias constantes na estrutura de aquisição.",
+      "Para empresas que querem previsibilidade, análise de dados e melhorias constantes na aquisição.",
     price: "R$997",
     period: "por mês",
     badge: "Mais indicado",
@@ -164,17 +191,17 @@ const pricingPlans = [
       "Mais variações de criativos",
       "Análise de funil e conversão",
       "Eventos e acompanhamento com GA4",
-      "Melhorias mensais em página ou seção estratégica",
+      "Melhoria mensal em página ou seção estratégica",
       "Recomendações para aumentar conversão"
     ]
   },
   {
     name: "Scale",
     description:
-      "Para negócios com ticket maior, maior volume de vendas ou necessidade de uma estrutura mais completa de crescimento.",
+      "Para negócios com ticket maior, mais verba de mídia ou necessidade de funil completo.",
     price: "Sob diagnóstico",
-    period: "",
-    badge: null,
+    period: "projeto personalizado",
+    badge: "Avançado",
     highlighted: false,
     buttonText: "Solicitar diagnóstico",
     features: [
@@ -189,11 +216,40 @@ const pricingPlans = [
   }
 ];
 
+const faqItems = [
+  {
+    question: "A verba dos anúncios está inclusa?",
+    answer:
+      "Não. A verba de mídia é paga diretamente para Meta Ads ou Google Ads. O valor dos planos cobre estratégia, configuração, gestão, criativos, análise e otimização."
+  },
+  {
+    question: "Preciso ter site para começar?",
+    answer:
+      "Não necessariamente. Podemos começar com uma landing page simples ou ajustar uma página existente para direcionar o visitante ao WhatsApp."
+  },
+  {
+    question: "Em quanto tempo aparecem os primeiros dados?",
+    answer:
+      "Geralmente os primeiros sinais aparecem nos primeiros dias de campanha. A otimização real acontece após analisar cliques, conversas, criativos, público e custo por oportunidade."
+  },
+  {
+    question: "Vocês garantem vendas?",
+    answer:
+      "Não prometemos venda garantida. O trabalho é construir uma estrutura melhor para gerar oportunidades. O resultado também depende de oferta, preço, atendimento e processo comercial."
+  },
+  {
+    question: "Vocês fazem os criativos?",
+    answer:
+      "Sim. Os planos incluem criativos iniciais para teste. No plano Crescimento há mais variações e melhoria contínua com base nos dados."
+  }
+];
+
 function Header() {
   return (
     <header className="header">
       <a href="#topo" className="brand" aria-label="Scale Hub">
-        <span className="brandIcon">S</span>
+        <img src="/logo-scalehub.png" alt="Logo Scale Hub" className="brandLogo" />
+
         <span>
           <strong>Scale Hub</strong>
           <small>Tráfego Pago & Aquisição</small>
@@ -204,12 +260,12 @@ function Header() {
         <a href="#dores">Dores</a>
         <a href="#metodo">Método</a>
         <a href="#dados">Dados</a>
-        <a href="#contato">Contato</a>
+        <a href="#planos">Planos</a>
       </nav>
 
-      <a className="headerButton" href={whatsappLink} target="_blank" rel="noreferrer">
-        Solicitar diagnóstico
-      </a>
+      <WhatsAppCTA className="headerButton" eventLabel="header">
+        Diagnóstico gratuito
+      </WhatsAppCTA>
     </header>
   );
 }
@@ -220,28 +276,28 @@ function MiniDashboard() {
       <div className="dashboardTop">
         <div>
           <span className="dashboardStatus"></span>
-          <span>Visão geral da campanha</span>
+          <span>Painel de campanha</span>
         </div>
-        <strong>AO VIVO</strong>
+        <strong>EXEMPLO</strong>
       </div>
 
       <div className="statsGrid">
         <div className="statBox">
           <small>Investimento</small>
           <strong>R$ 248,00</strong>
-          <span>+18%</span>
+          <span>monitorado</span>
         </div>
 
         <div className="statBox">
-          <small>Custo por lead</small>
+          <small>Custo por conversa</small>
           <strong>R$ 15,42</strong>
-          <span>−12%</span>
+          <span>em análise</span>
         </div>
 
         <div className="statBox">
           <small>Taxa de resposta</small>
           <strong>17,7%</strong>
-          <span>+9%</span>
+          <span>oportunidade</span>
         </div>
       </div>
 
@@ -264,8 +320,8 @@ function MiniDashboard() {
         </div>
 
         <div className="miniTags">
-          <span>Campanha 1</span>
-          <span>Campanha 2</span>
+          <span>Campanha</span>
+          <span>Criativo</span>
           <span>Reteste</span>
         </div>
       </div>
@@ -293,11 +349,32 @@ function Card({ icon, title, text }) {
   );
 }
 
+function ProofSection() {
+  return (
+    <section className="section proofSection">
+      <div className="proofIntro">
+        <span>Prova de controle</span>
+        <h2>
+          Não é só colocar anúncio no ar. É saber <strong>o que está acontecendo.</strong>
+        </h2>
+      </div>
+
+      <div className="proofGrid">
+        {proofStats.map((item) => (
+          <article className="proofCard" key={item.label}>
+            <strong>{item.value}</strong>
+            <span>{item.label}</span>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function PricingSection() {
-  function getPlanLink(planName) {
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      `Olá, quero saber mais sobre o plano ${planName} da Scale Hub.`
-    )}`;
+  function getPlanMessage(planName) {
+    return `Olá, quero saber mais sobre o plano ${planName} da Scale Hub.`;
   }
 
   return (
@@ -306,13 +383,12 @@ function PricingSection() {
         <span>Planos e investimento</span>
 
         <h2>
-          Planos para negócios que querem vender mais com{" "}
-          <strong>anúncios.</strong>
+          Escolha o ponto de partida para gerar mais <strong>conversas comerciais.</strong>
         </h2>
 
         <p>
-          Escolha o ponto de partida ideal. Se não souber qual plano faz
-          sentido, solicite um diagnóstico.
+          Comece com uma estrutura simples ou avance para um acompanhamento mais completo.
+          Se tiver dúvida, o diagnóstico indica o melhor caminho.
         </p>
       </div>
 
@@ -342,16 +418,40 @@ function PricingSection() {
               ))}
             </ul>
 
-            <a
-              className={`pricingButton ${
-                plan.highlighted ? "pricingButtonFeatured" : ""
-              }`}
-              href={getPlanLink(plan.name)}
-              target="_blank"
-              rel="noreferrer"
+            <WhatsAppCTA
+              className={`pricingButton ${plan.highlighted ? "pricingButtonFeatured" : ""}`}
+              message={getPlanMessage(plan.name)}
+              eventLabel={`pricing_${plan.name.toLowerCase().replaceAll(" ", "_")}`}
             >
               {plan.buttonText}
-            </a>
+            </WhatsAppCTA>
+          </article>
+        ))}
+      </div>
+
+      <div className="planNote">
+        <strong>Importante:</strong> a verba de anúncio não está inclusa. Site completo,
+        e-commerce, gestão diária de redes sociais e atendimento comercial são serviços separados
+        ou definidos no diagnóstico.
+      </div>
+    </section>
+  );
+}
+
+function FAQSection() {
+  return (
+    <section className="section faqSection">
+      <SectionTitle
+        eyebrow="Dúvidas comuns"
+        title={"Antes de contratar, é importante ter <strong>clareza.</strong>"}
+        text="Uma campanha saudável depende de anúncio, página, dados, oferta e atendimento funcionando juntos."
+      />
+
+      <div className="faqGrid">
+        {faqItems.map((item) => (
+          <article className="faqItem" key={item.question}>
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
           </article>
         ))}
       </div>
@@ -373,37 +473,39 @@ function App() {
             </div>
 
             <h1>
-              Transformamos anúncios em <strong>conversas reais</strong> para negócios locais
+              Mais orçamentos pelo WhatsApp com <strong>tráfego pago estruturado</strong>
             </h1>
 
             <p>
-              Criamos páginas, campanhas e rastreamento para sua empresa gerar clientes com mais previsibilidade e depender menos da indicação ou impulsionamento aleatório.
+              Criamos campanhas, criativos, landing pages e rastreamento para sua empresa
+              gerar conversas com intenção de compra e depender menos de indicação,
+              sorte ou impulsionamento aleatório.
             </p>
 
             <div className="heroActions">
-              <a className="primaryButton" href={whatsappLink} target="_blank" rel="noreferrer">
-                Solicitar diagnóstico
-              </a>
+              <WhatsAppCTA className="primaryButton" eventLabel="hero_primary">
+                Quero diagnóstico gratuito
+              </WhatsAppCTA>
 
-              <a className="secondaryButton" href="#metodo">
-                Ver como funciona
+              <a className="secondaryButton" href="#planos">
+                Ver planos
               </a>
             </div>
 
             <div className="heroNumbers">
               <div>
-                <strong>+1.2K</strong>
-                <span>Cliques mensais</span>
+                <strong>Meta Ads</strong>
+                <span>campanhas para WhatsApp</span>
               </div>
 
               <div>
-                <strong>17,7%</strong>
-                <span>Taxa média de resposta</span>
+                <strong>LP</strong>
+                <span>página com foco em conversão</span>
               </div>
 
               <div>
-                <strong>100%</strong>
-                <span>Dados rastreados</span>
+                <strong>GA4</strong>
+                <span>eventos e dados rastreados</span>
               </div>
             </div>
           </div>
@@ -413,11 +515,33 @@ function App() {
           </div>
         </section>
 
+        <section className="trustStrip">
+          <div>
+            <strong>Campanha</strong>
+            <span>Estratégia, segmentação e oferta</span>
+          </div>
+
+          <div>
+            <strong>Criativo</strong>
+            <span>Peças iniciais para testar resposta</span>
+          </div>
+
+          <div>
+            <strong>Página</strong>
+            <span>Rota clara para o WhatsApp</span>
+          </div>
+
+          <div>
+            <strong>Dados</strong>
+            <span>Pixel, GA4 e métricas de decisão</span>
+          </div>
+        </section>
+
         <section className="section" id="dores">
           <SectionTitle
             eyebrow="O problema"
             title={"O problema não é anunciar. <br/>É anunciar <strong>sem sistema.</strong>"}
-            text="Muitos negócios investem em anúncios, mas não sabem exatamente o que está funcionando. Sem rastreamento, página preparada e análise de dados, o investimento vira tentativa e erro."
+            text="Muitos negócios investem em tráfego, mas não sabem o que está funcionando. Sem rastreamento, página preparada e análise, o investimento vira tentativa e erro."
           />
 
           <div className="grid cardsGrid">
@@ -427,11 +551,11 @@ function App() {
           </div>
         </section>
 
-        <section className="section">
+        <section className="section darker">
           <SectionTitle
             eyebrow="A solução"
             title={"A Scale Hub estrutura sua aquisição do anúncio até a <strong>conversão.</strong>"}
-            text="Nosso processo conecta tráfego, página, rastreamento e análise para transformar atenção em oportunidades reais de venda."
+            text="Conectamos tráfego, página, rastreamento e otimização para transformar atenção em oportunidades reais de venda."
           />
 
           <div className="grid cardsGrid">
@@ -441,10 +565,13 @@ function App() {
           </div>
         </section>
 
-        <section className="section darker" id="metodo">
+        <ProofSection />
+
+        <section className="section" id="metodo">
           <SectionTitle
             eyebrow="Como funciona"
             title={"Um processo simples, <br/><strong>estratégico e mensurável.</strong>"}
+            text="Você não precisa entender tudo sobre anúncios. Precisa de uma estrutura clara, acompanhamento e melhoria contínua."
           />
 
           <div className="processGrid">
@@ -462,7 +589,7 @@ function App() {
           <SectionTitle
             eyebrow="Método Scale Hub"
             title={"Nosso método de <strong>crescimento</strong>"}
-            text="A Scale Hub trabalha com um método próprio para organizar aquisição, conversão e melhoria contínua. Primeiro posicionamos a oferta, depois ativamos campanhas e otimizamos com base em dados."
+            text="Primeiro alinhamos a oferta. Depois ativamos campanhas. Por fim, otimizamos com base em dados reais."
           />
 
           <div className="methodGrid">
@@ -479,31 +606,47 @@ function App() {
           </div>
 
           <div className="center">
-            <a className="smallButton" href="#contato">
-              Conhecer o método completo
-            </a>
+            <WhatsAppCTA
+              className="smallButton"
+              message="Olá, quero entender o método da Scale Hub para gerar mais conversas pelo WhatsApp."
+              eventLabel="method"
+            >
+              Conhecer o método no WhatsApp
+            </WhatsAppCTA>
           </div>
         </section>
 
-        <section className="section" id="dados">
+        <section className="section darker" id="dados">
           <SectionTitle
             eyebrow="Métricas que importam"
             title={"Não trabalhamos no <strong>escuro.</strong>"}
-            text="Todo investimento é acompanhado por estrutura de dados. Veja o tipo de visibilidade que entregamos em cada projeto."
+            text="Acompanhamos os sinais que ajudam a decidir o que manter, pausar, melhorar ou testar novamente."
           />
 
           <div className="dataGrid">
-            <article className="dataCard">
+            <article className="dataCard dataCardFeatured">
               <div className="dataHeader">
                 <h3>Eventos rastreados</h3>
                 <span>+</span>
               </div>
 
               <div className="metricRows">
-                <div><span>View content</span><strong>12.430</strong></div>
-                <div><span>Lead</span><strong>1.184</strong></div>
-                <div><span>Iniciar WhatsApp</span><strong>456</strong></div>
-                <div><span>Conversas qualificadas</span><strong>89</strong></div>
+                <div>
+                  <span>Visualização da página</span>
+                  <strong>view_lp</strong>
+                </div>
+                <div>
+                  <span>Clique no WhatsApp</span>
+                  <strong>lead</strong>
+                </div>
+                <div>
+                  <span>Visualização dos planos</span>
+                  <strong>view_pricing</strong>
+                </div>
+                <div>
+                  <span>CTA final</span>
+                  <strong>click_cta</strong>
+                </div>
               </div>
             </article>
 
@@ -551,51 +694,23 @@ function App() {
 
               <div className="legend">
                 <span></span>
-                Meta
+                Conversas
                 <span></span>
-                Conversas qualificadas
+                Oportunidades
               </div>
             </article>
 
             <article className="dataCard">
               <div className="dataHeader">
-                <h3>Relatório de desempenho</h3>
-                <span>+</span>
-              </div>
-
-              <div className="metricRows">
-                <div><span>Total investido</span><strong>R$ 248,00</strong></div>
-                <div><span>CPC médio</span><strong>R$ 1,52</strong></div>
-                <div><span>Taxa resposta</span><strong>17,7%</strong></div>
-                <div><span>Melhor campanha</span><strong>Oferta direta</strong></div>
-              </div>
-            </article>
-
-            <article className="dataCard">
-              <div className="dataHeader">
-                <h3>Páginas criadas para conversão</h3>
-                <span>+</span>
-              </div>
-
-              <div className="pagePreview">
-                <div></div>
-                <span></span>
-                <span></span>
-                <strong></strong>
-              </div>
-            </article>
-
-            <article className="dataCard">
-              <div className="dataHeader">
-                <h3>GA4 integrado à aquisição</h3>
+                <h3>Relatório mensal</h3>
                 <span>+</span>
               </div>
 
               <ul className="checkList">
-                <li>Eventos de clique no WhatsApp</li>
-                <li>Origem do tráfego por campanha</li>
-                <li>Páginas com melhor resposta</li>
-                <li>Dados para otimização contínua</li>
+                <li>O que funcionou</li>
+                <li>O que precisa melhorar</li>
+                <li>Próximos testes</li>
+                <li>Recomendações comerciais</li>
               </ul>
             </article>
           </div>
@@ -618,7 +733,7 @@ function App() {
               </ul>
             </article>
 
-            <article className="audienceCard">
+            <article className="audienceCard audienceCardDark">
               <h3>Não é para você se:</h3>
 
               <ul>
@@ -632,19 +747,24 @@ function App() {
 
         <PricingSection />
 
+        <FAQSection />
+
         <section className="section finalCta" id="contato">
           <div>
+            <span>Diagnóstico gratuito</span>
+
             <h2>
               Quer saber se tráfego pago faz sentido para o <strong>seu negócio agora?</strong>
             </h2>
 
             <p>
-              Solicite um diagnóstico inicial. Vamos analisar sua presença digital, sua oferta e entender quais estratégias fazem sentido para gerar conversas qualificadas.
+              Vamos analisar sua oferta, presença digital e rota de conversão para indicar
+              o melhor caminho para gerar conversas qualificadas.
             </p>
 
-            <a className="primaryButton" href={whatsappLink} target="_blank" rel="noreferrer">
+            <WhatsAppCTA className="primaryButton" eventLabel="final_cta">
               Solicitar diagnóstico no WhatsApp
-            </a>
+            </WhatsAppCTA>
           </div>
         </section>
       </main>
@@ -652,7 +772,7 @@ function App() {
       <footer className="footer">
         <div className="footerBrand">
           <a href="#topo" className="brand">
-            <span className="brandIcon">S</span>
+            <img src="/logo-scalehub.png" alt="Logo Scale Hub" className="brandLogo" />
             <span>
               <strong>Scale Hub</strong>
               <small>Tráfego Pago & Aquisição</small>
@@ -672,10 +792,18 @@ function App() {
 
         <div>
           <h4>Contato</h4>
-          <a href={whatsappLink} target="_blank" rel="noreferrer">WhatsApp</a>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+          <a href={whatsappLink} target="_blank" rel="noreferrer">
+            WhatsApp
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noreferrer">
+            Instagram
+          </a>
         </div>
       </footer>
+
+      <WhatsAppCTA className="stickyMobileCta" eventLabel="sticky_mobile">
+        Falar no WhatsApp
+      </WhatsAppCTA>
     </div>
   );
 }
